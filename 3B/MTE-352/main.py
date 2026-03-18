@@ -69,7 +69,7 @@ def estimateFrictionFactor(height, pipe_length, sin_theta, basin_area, pipe_area
 
 def rk4(height, pipe_length, sin_theta, basin_area, pipe_area, pipe_diameter, k_entry, kinematic_viscosity, f_init=0.02, n=1000, s=0.01):
     
-    def f(t, h):
+    def f(h):
         #friction_factor = estimateFrictionFactor(h, pipe_length, sin_theta, basin_area, pipe_area, pipe_diameter, k_entry, kinematic_viscosity, f_init)
         return pipeChange(h, pipe_length, sin_theta, basin_area, pipe_area, pipe_diameter, k_entry, 0.02)
     
@@ -80,10 +80,10 @@ def rk4(height, pipe_length, sin_theta, basin_area, pipe_area, pipe_diameter, k_
     h = s  
     
     for _ in range(n):
-        k1 = h * f(curr_time, curr_height)
-        k2 = h * f(curr_time + h/2, curr_height + k1/2)
-        k3 = h * f(curr_time + h/2, curr_height + k2/2)
-        k4 = h * f(curr_time + h, curr_height + k3)
+        k1 = h * f(curr_height)
+        k2 = h * f(curr_height + k1/2)
+        k3 = h * f(curr_height + k2/2)
+        k4 = h * f(curr_height + k3)
 
         curr_height += (k1 + 2*k2 + 2*k3 + k4) / 6
         curr_time += h
