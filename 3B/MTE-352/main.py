@@ -32,7 +32,7 @@ def frictionFactor(relative_roughness, reynolds_number, f_init = 0.02):
         return 64 / reynolds_number
     elif reynolds_number > top:
         return 0.25 / (np.log10(relative_roughness/3.7 + 5.74/(reynolds_number**0.9)))**2 
-
+    print("woo");
     lam = 64 / reynolds_number
     turb = 0.25 / (np.log10(relative_roughness/3.7 + 5.74/(reynolds_number**0.9)))**2
     lerp = (reynolds_number - bot) / (top - bot)
@@ -44,7 +44,6 @@ def relativeRoughness(roughness, diameter):
 def pipeChange(height, pipe_length, sin_theta, basin_area, pipe_area, pipe_diameter, k_entry, k_exit, friction_factor):
     
     coeff = pipe_area / basin_area
-    L_eff = max(pipe_length - 20 * pipe_diameter, 0) # for friction factor estimation, but we use the full length for the actual change calculation
 
     denominator = 1 - (coeff ** 2) + friction_factor * (pipe_length / pipe_diameter) + k_entry + k_exit
     numerator = 2 * gravity * (effectiveHead(height, pipe_diameter, pipe_length, sin_theta))
@@ -109,8 +108,8 @@ def main():
     sin_theta = 1/150      
 
     # Loss coefficients
-    k_entry = 0.5               # sharp-edged entry
-    k_exit = 0.0               # sharp-edged exit
+    k_entry = 0.6               # sharp-edged entry
+    k_exit = 0.0  # claude said i'm double counting with the 1 in my denom already lol need to verify
     # RK4 settings
     n_steps = 10000
     step_size = 0.1            # seconds
@@ -118,7 +117,7 @@ def main():
     # Derived
     pipe_area = circleArea(pipe_diameter)
 
-    for pipe_length in [0.1, 0.2, 0.3, 0.4, 0.6]:
+    for pipe_length in [0.2, 0.3, 0.4, 0.6]:
         times, heights = rk4(
             height=initial_height,
             pipe_length=pipe_length,
@@ -135,13 +134,13 @@ def main():
 
         drop = initial_height - heights[-1]
         print(f"\nPipe length: {pipe_length:.2f} m")
-        print(f"Simulated {times[-1]:.2f} seconds over {len(times)} steps")
-        print(f"Height dropped from {initial_height:.3f} m to {heights[-1]:.3f} m ({drop*100:.1f} cm)")
+        # print(f"Simulated {times[-1]:.2f} seconds over {len(times)} steps")
+        # print(f"Height dropped from {initial_height:.3f} m to {heights[-1]:.3f} m ({drop*100:.1f} cm)")
 
         if drop >= 0.08:
             print(f"8 cm drop reached at t = {times[-1]:.2f} s\n")
-        else:
-            print(f"8 cm drop not reached in simulation window\n")
+        #else:
+            #print(f"8 cm drop not reached in simulation window\n")
         
 
 
