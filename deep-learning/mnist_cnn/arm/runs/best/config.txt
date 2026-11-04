@@ -1,0 +1,13 @@
+n_blocks 3
+base_filters 64
+use_batchnorm 1
+gap 1
+batch_size 128
+onecycle 1
+dropout 0.474877
+weight_decay 0.000409811619
+label_smoothing 0.110564493
+lr 0.00426058238
+rotation 8.13389301
+translate 0.102156021
+scale_jitter 0.0156324022
